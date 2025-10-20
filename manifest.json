@@ -1,0 +1,24 @@
+{
+  "name": "वेदव्रत आणि कोमल विवाह आमंत्रण - Vedavrat & Komal Wedding Invitation",
+  "short_name": "विवाह आमंत्रण",
+  "description": "वेदव्रत प्रभंजन पाटवर्धन आणि कोमल महादेव राऊत यांचा पवित्र विवाह सोहळा हिंदू वैदिक पद्धतीने",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5E6D3",
+  "theme_color": "#F5E6D3",
+  "orientation": "portrait-primary",
+  "categories": ["events", "social"],
+  "lang": "mr",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

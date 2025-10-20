@@ -154,10 +154,10 @@
           <div class="couple-details">
             <div class="groom-section">
               <div class="decorative-label">वर</div>
-              <h3 class="person-name">वेदव्रत प्रभंजन पाटवर्धन</h3>
+              <h3 class="person-name">वेदव्रत प्रभंजन पटवर्धन</h3>
               <p class="parents-info">
-                पुत्र - प्रभंजन प्रभाकर पाटवर्धन<br />
-                दिपाली प्रभंजन पाटवर्धन
+                पुत्र - प्रभंजन प्रभाकर पटवर्धन<br />
+                दीपाली प्रभंजन पटवर्धन
               </p>
               <div class="flower-decoration">
                 <svg viewBox="0 0 100 20" width="100" height="20">
@@ -184,7 +184,7 @@
               <div class="decorative-label">वधू</div>
               <h3 class="person-name">कोमल महादेव राऊत</h3>
               <p class="parents-info">
-                पुत्री - महादेव गोविंद राऊत<br />
+                पुत्री - महादेव शिवा राऊत<br />
                 मिनाक्षी महादेव राऊत
               </p>
               <div class="flower-decoration">
@@ -262,7 +262,7 @@
               </div>
               <h3>तारीख</h3>
               <p class="info-value">२६ फेब्रुवारी २०२६</p>
-              <p class="info-subtext">बुधवार</p>
+              <p class="info-subtext">गुरुवार</p>
             </div>
 
             <div class="info-card">
@@ -313,10 +313,9 @@
                 </svg>
               </div>
               <h3>स्थळ</h3>
-              <p class="info-value">विवाह मंडप</p>
+              <p class="info-value">परशुराम भवन</p>
               <p class="info-subtext">
-                परशुराम भवन, ओल्ड सीबीएस पास, केंद्र १८३४, पोलीस स्टाफ कॉलनी,
-                एसबीआय बँकेसमोर, नाशिक, महाराष्ट्र ४२२००२
+                सीबीएस, एसबीआय बँकेसमोर, नाशिक, महाराष्ट्र ४२२००२
               </p>
             </div>
           </div>
@@ -634,38 +633,70 @@
               <div class="form-group">
                 <label for="guestName">आपले नाव *</label>
                 <input type="text" id="guestName" name="guestName" required />
+                <div class="error-message" id="nameError"></div>
               </div>
               <div class="form-group">
-                <label for="guestEmail">ईमेल</label>
-                <input type="email" id="guestEmail" name="guestEmail" />
+                <label for="guestPhone">फोन नंबर *</label>
+                <input
+                  type="tel"
+                  id="guestPhone"
+                  name="guestPhone"
+                  placeholder="+91 9876543210"
+                  pattern="[0-9+\s\-\(\)]*"
+                  inputmode="numeric"
+                  required
+                />
+                <div class="error-message" id="phoneError"></div>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="guestPhone">फोन नंबर *</label>
-                <input type="tel" id="guestPhone" name="guestPhone" required />
+                <label for="attendance">उपस्थिती *</label>
+                <div class="custom-dropdown" id="attendanceDropdown">
+                  <div class="dropdown-selected" id="attendanceSelected">
+                    <span>निवडा</span>
+                    <svg
+                      class="dropdown-arrow"
+                      viewBox="0 0 24 24"
+                      width="16"
+                      height="16"
+                    >
+                      <path d="M7 10l5 5 5-5z" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div class="dropdown-options" id="attendanceOptions">
+                    <div class="dropdown-option" data-value="yes">
+                      होय, मी येईन
+                    </div>
+                    <div class="dropdown-option" data-value="no">
+                      नाही, मी येऊ शकणार नाही
+                    </div>
+                    <div class="dropdown-option" data-value="maybe">
+                      निश्चित नाही
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="hidden"
+                  id="attendance"
+                  name="attendance"
+                  required
+                />
+                <div class="error-message" id="attendanceError"></div>
               </div>
               <div class="form-group">
-                <label for="attendance">उपस्थिती *</label>
-                <select id="attendance" name="attendance" required>
-                  <option value="">निवडा</option>
-                  <option value="yes">होय, मी येईन</option>
-                  <option value="no">नाही, मी येऊ शकणार नाही</option>
-                </select>
+                <label for="guests">किती पाहुणे येत आहेत?</label>
+                <input
+                  type="number"
+                  id="guests"
+                  name="guests"
+                  min="1"
+                  max="30"
+                  value="1"
+                  class="no-spinner"
+                />
               </div>
-            </div>
-
-            <div class="form-group">
-              <label for="guests">किती पाहुणे येत आहेत?</label>
-              <input
-                type="number"
-                id="guests"
-                name="guests"
-                min="1"
-                max="10"
-                value="1"
-              />
             </div>
 
             <div class="form-group">
@@ -695,6 +726,20 @@
         </div>
       </section>
     </main>
+
+    <!-- Form Loader -->
+    <div id="formLoader" class="form-loader">
+      <div class="loader-content">
+        <div class="marriage-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-center">
+            <div class="spinner-diya"></div>
+          </div>
+        </div>
+        <div class="loader-text">आपली माहिती सेव्ह होत आहे...</div>
+        <div class="loader-subtext">कृपया थोडा वेळ वाट पहा</div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -754,7 +799,7 @@
       <p class="footer-text">
         आम्ही तुमची उपस्थिती आणि आशीर्वाद यांची अपेक्षा करतो
       </p>
-      <p class="footer-names">वेदव्रत & कोमल</p>
+      <p class="footer-names">वेदव्रत आणि कोमल</p>
       <p class="footer-date">२६ फेब्रुवारी २०२६</p>
     </footer>
 

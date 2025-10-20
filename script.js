@@ -67,7 +67,6 @@ function initializeRSVP() {
 
     const formData = {
       name: document.getElementById("guestName").value,
-      email: document.getElementById("guestEmail").value,
       phone: document.getElementById("guestPhone").value,
       attendance: document.getElementById("attendance").value,
       guests: document.getElementById("guests").value,
@@ -75,26 +74,224 @@ function initializeRSVP() {
       timestamp: new Date().toISOString(),
     };
 
-    // Validate
-    if (!formData.name || !formData.phone || !formData.attendance) {
-      showMessage("कृपया सर्व आवश्यक माहिती भरा", "error");
+    // Validate form
+    if (!validateForm(formData)) {
       return;
     }
 
-    // Store in localStorage (in production, send to server)
-    const rsvps = JSON.parse(localStorage.getItem("weddingRSVPs") || "[]");
-    rsvps.push(formData);
-    localStorage.setItem("weddingRSVPs", JSON.stringify(rsvps));
-
-    // Show success message
-    showMessage(
-      "धन्यवाद! तुमची उपस्थिती नोंदवली गेली आहे. आम्ही तुमची वाट पाहत आहोत! 🙏",
-      "success"
-    );
-
-    // Reset form
-    form.reset();
+    // Submit to Google Sheets
+    submitToGoogleSheets(formData);
   });
+
+  // Phone number validation for Indian numbers
+  function validateIndianPhone(phone) {
+    // Remove all non-digits
+    const cleanPhone = phone.replace(/\D/g, "");
+
+    // Check if it's a valid Indian mobile number
+    // Indian mobile numbers: 10 digits starting with 6, 7, 8, or 9
+    const indianMobileRegex = /^[6-9]\d{9}$/;
+
+    // Also accept numbers with +91 prefix
+    const withCountryCode =
+      cleanPhone.startsWith("91") &&
+      indianMobileRegex.test(cleanPhone.substring(2));
+    const withoutCountryCode = indianMobileRegex.test(cleanPhone);
+
+    return withCountryCode || withoutCountryCode;
+  }
+
+  // Form validation
+  function validateForm(formData) {
+    let isValid = true;
+
+    // Clear previous errors and styling
+    clearErrors();
+    clearFieldStyling();
+
+    // Name validation
+    if (!formData.name.trim()) {
+      showFieldError("nameError", "कृपया आपले नाव टाका");
+      document.getElementById("guestName").classList.add("error");
+      isValid = false;
+    } else {
+      document.getElementById("guestName").classList.add("success");
+    }
+
+    // Phone validation
+    if (!formData.phone.trim()) {
+      showFieldError("phoneError", "कृपया फोन नंबर टाका");
+      document.getElementById("guestPhone").classList.add("error");
+      isValid = false;
+    } else if (!validateIndianPhone(formData.phone)) {
+      showFieldError(
+        "phoneError",
+        "कृपया वैध भारतीय फोन नंबर टाका (उदा: 9876543210)"
+      );
+      document.getElementById("guestPhone").classList.add("error");
+      isValid = false;
+    } else {
+      document.getElementById("guestPhone").classList.add("success");
+    }
+
+    // Attendance validation
+    if (!formData.attendance) {
+      showFieldError("attendanceError", "कृपया उपस्थिती निवडा");
+      document.getElementById("attendanceDropdown").classList.add("error");
+      isValid = false;
+    } else {
+      document.getElementById("attendanceDropdown").classList.add("success");
+    }
+
+    return isValid;
+  }
+
+  function showFieldError(errorId, message) {
+    const errorElement = document.getElementById(errorId);
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+    }
+  }
+
+  function clearErrors() {
+    const errorElements = document.querySelectorAll(".error-message");
+    errorElements.forEach((element) => {
+      element.textContent = "";
+      element.style.display = "none";
+    });
+  }
+
+  function clearFieldStyling() {
+    const inputs = document.querySelectorAll("input, .custom-dropdown");
+    inputs.forEach((input) => {
+      input.classList.remove("error", "success");
+    });
+  }
+
+  // Custom dropdown functionality
+  function initializeCustomDropdown() {
+    const dropdown = document.getElementById("attendanceDropdown");
+    const selected = document.getElementById("attendanceSelected");
+    const options = document.getElementById("attendanceOptions");
+    const hiddenInput = document.getElementById("attendance");
+
+    // Toggle dropdown
+    selected.addEventListener("click", function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle("active");
+    });
+
+    // Handle option selection
+    options.addEventListener("click", function (e) {
+      if (e.target.classList.contains("dropdown-option")) {
+        const value = e.target.getAttribute("data-value");
+        const text = e.target.textContent;
+
+        selected.querySelector("span").textContent = text;
+        hiddenInput.value = value;
+
+        dropdown.classList.remove("active");
+
+        // Clear error if any
+        showFieldError("attendanceError", "");
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove("active");
+      }
+    });
+  }
+
+  // Initialize custom dropdown
+  initializeCustomDropdown();
+
+  // Phone input restrictions
+  function initializePhoneInput() {
+    const phoneInput = document.getElementById("guestPhone");
+
+    phoneInput.addEventListener("input", function (e) {
+      // Remove any non-numeric characters except +, -, (, ), and spaces
+      let value = e.target.value;
+      value = value.replace(/[^0-9+\-\(\)\s]/g, "");
+      e.target.value = value;
+    });
+
+    phoneInput.addEventListener("keypress", function (e) {
+      // Allow: backspace, delete, tab, escape, enter
+      if (
+        [8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true)
+      ) {
+        return;
+      }
+      // Ensure that it is a number and stop the keypress
+      if (
+        (e.shiftKey || e.keyCode < 48 || e.keyCode > 57) &&
+        (e.keyCode < 96 || e.keyCode > 105) &&
+        e.keyCode !== 43 && // +
+        e.keyCode !== 45 && // -
+        e.keyCode !== 40 && // (
+        e.keyCode !== 41
+      ) {
+        // )
+        e.preventDefault();
+      }
+    });
+  }
+
+  // Initialize phone input restrictions
+  initializePhoneInput();
+
+  async function submitToGoogleSheets(formData) {
+    const loader = document.getElementById("formLoader");
+
+    try {
+      // Show loader
+      loader.classList.add("active");
+
+      // Replace with your Google Apps Script URL
+      const GOOGLE_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbyoJQGqEp2NhSIGyt7YWCEtfZQ9hiGjleElzofdxr6R0GZgmPl7qP4jQp62-7toz2k/exec";
+
+      // const DEPLOYMENT_ID =
+      //   "AKfycbyoJQGqEp2NhSIGyt7YWCEtfZQ9hiGjleElzofdxr6R0GZgmPl7qP4jQp62-7toz2k";
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Hide loader
+      loader.classList.remove("active");
+
+      // Show success message
+      showMessage(
+        "धन्यवाद! तुमची उपस्थिती नोंदवली गेली आहे. आम्ही तुमची वाट पाहत आहोत! 🙏",
+        "success"
+      );
+
+      // Reset form
+      form.reset();
+      clearFieldStyling();
+    } catch (error) {
+      // Hide loader
+      loader.classList.remove("active");
+
+      console.error("Error submitting to Google Sheets:", error);
+      showMessage("कृपया पुन्हा प्रयत्न करा. त्रुटी आली आहे.", "error");
+    }
+  }
 
   function showMessage(text, type) {
     messageEl.textContent = text;

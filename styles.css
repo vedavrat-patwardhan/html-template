@@ -961,3 +961,264 @@ body {
     font-size: 0.9rem;
   }
 }
+
+/* Form UI Improvements */
+
+/* Remove spinner from number input */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Error message styling */
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none;
+  font-weight: 500;
+}
+
+/* Custom Dropdown Styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-selected {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--border-radius);
+  background: var(--white);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: var(--dark-gray);
+  transition: var(--transition);
+  min-height: 48px;
+}
+
+.dropdown-selected:hover {
+  border-color: var(--primary-gold);
+}
+
+.dropdown-selected:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.dropdown-arrow {
+  color: var(--medium-gray);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.custom-dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border: 2px solid var(--primary-gold);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: var(--box-shadow);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+.custom-dropdown.active .dropdown-options {
+  display: block;
+}
+
+.dropdown-option {
+  padding: 0.8rem;
+  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: var(--dark-gray);
+  transition: var(--transition);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.dropdown-option:hover {
+  background: var(--light-gold);
+  color: var(--dark-gold);
+}
+
+.dropdown-option:active {
+  background: var(--primary-gold);
+  color: var(--white);
+}
+
+/* Form validation states - only show after submission */
+.form-group input.error,
+.form-group textarea.error,
+.custom-dropdown.error .dropdown-selected {
+  border-color: #dc3545;
+}
+
+.form-group input.success,
+.form-group textarea.success,
+.custom-dropdown.success .dropdown-selected {
+  border-color: #28a745;
+}
+
+/* Phone input specific styling */
+input[type="tel"] {
+  font-family: var(--font-secondary);
+}
+
+/* Form row improvements */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Marriage-themed Loader */
+.form-loader {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.form-loader.active {
+  display: flex;
+}
+
+.loader-content {
+  text-align: center;
+  color: var(--primary-gold);
+}
+
+.loader-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  animation: rotate 2s linear infinite;
+}
+
+.loader-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--primary-gold);
+}
+
+.loader-subtext {
+  font-size: 0.9rem;
+  color: var(--medium-gray);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Marriage-themed spinner with diya */
+.marriage-spinner {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--light-gold);
+  border-top: 3px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+}
+
+.spinner-diya {
+  width: 20px;
+  height: 20px;
+  background: var(--primary-gold);
+  border-radius: 50%;
+  position: relative;
+  animation: flicker 1.5s ease-in-out infinite alternate;
+}
+
+.spinner-diya::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--orange);
+  border-radius: 50%;
+  animation: flicker 1s ease-in-out infinite alternate;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -71,7 +71,7 @@ function initializeRSVP() {
       attendance: document.getElementById("attendance").value,
       guests: document.getElementById("guests").value,
       message: document.getElementById("message").value,
-      timestamp: new Date().toISOString(),
+      timestamp: getIndianDateTime(),
     };
 
     // Validate form
@@ -249,6 +249,27 @@ function initializeRSVP() {
 
   // Initialize phone input restrictions
   initializePhoneInput();
+
+  // Get Indian date and time in readable format
+  function getIndianDateTime() {
+    const now = new Date();
+
+    // Convert to IST (UTC+5:30)
+    const istTime = new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
+
+    // Format as readable Indian date
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kolkata",
+    };
+
+    return now.toLocaleString("en-IN", options);
+  }
 
   async function submitToGoogleSheets(formData) {
     const loader = document.getElementById("formLoader");
